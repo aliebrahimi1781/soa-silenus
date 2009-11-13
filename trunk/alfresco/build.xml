@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Alfresco SOA" basedir="." default="all">
+
+
+
+	<target name="init">
+
+		<!-- First load user defined properties to override the build -->
+		<loadproperties>
+			<file file="${basedir}/../build.properties" />
+		</loadproperties>
+
+		<!-- Load environment properties -->
+		<property environment="env"/>
+
+		<echoproperties destfile="${basedir}/env.properties" prefix="env."/>
+
+		<property name="alfresco.sdk" value="${basedir}/target/alfresco-sdk"/>
+
+
+		<condition property="alfresco-available">
+			<and>
+				<available file="${basedir}/${alfresco.download.file}"/>
+			</and>
+		</condition>
+
+		<condition property="alfresco-unpacked">
+			<and>
+				<available file="${alfresco.destination}"/>
+			</and>
+		</condition>
+
+
+		<condition property="alfresco-sdk-available">
+			<and>
+				<available file="${basedir}/${alfresco-sdk.download.file}"/>
+			</and>
+		</condition>
+
+		<condition property="alfresco-sdk-unpacked">
+			<and>
+				<available file="${alfresco.sdk}"/>
+			</and>
+		</condition>
+
+
+		<filterset id="app.filter" >
+			<filtersfile file="${basedir}/../build.properties"/>
+			<filtersfile file="${basedir}/env.properties"/>
+		</filterset>
+
+	</target>
+
+
+	<target name="fetch-alfresco"
+					depends="init"
+					unless="alfresco-available"
+					description="--> Download Alfresco">
+
+		<echo>Fetching alfresco tomcat from ${alfresco.download.url} ...</echo>
+		<get src="${alfresco.download.url}"
+				 dest="${basedir}/${alfresco.download.file}"
+				 usetimestamp="true"
+				/>
+
+	</target>
+
+
+	<target name="unpack-alfresco"
+					depends="fetch-alfresco"
+					unless="alfresco-unpacked"
+					description="--> Unpack alfresco">
+
+		<mkdir dir="${alfresco.destination}"/>
+
+		<echo>Unpacking Alfresco...</echo>
+		<untar src="${basedir}/${alfresco.download.file}"
+					 dest="${alfresco.destination}"
+				compression="gzip"/>
+
+
+		<echo>Installing maven artifacts...</echo>
+		<exec executable="mvn" dir="${alfresco.destination}/tomcat/webapps" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=alfresco -Dversion=3.2r -Dpackaging=war -Dfile=alfresco.war"/>
+		</exec>
+		<exec executable="mvn" dir="${alfresco.destination}/tomcat/webapps" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=share -Dversion=3.2r -Dpackaging=war -Dfile=share.war"/>
+		</exec>
+		<exec executable="mvn" dir="${alfresco.destination}/tomcat/webapps" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=mobile -Dversion=3.2r -Dpackaging=war -Dfile=mobile.war"/>
+		</exec>
+
+
+		<echo>Unpacking Alfresco WAR...</echo>
+		<unwar src="${alfresco.destination}/tomcat/webapps/alfresco.war"
+					 dest="${alfresco.destination}/tomcat/webapps/alfresco"
+					 overwrite="true" />
+
+		<echo>Unpacking Mobile WAR...</echo>
+		<unwar src="${alfresco.destination}/tomcat/webapps/mobile.war"
+					 dest="${alfresco.destination}/tomcat/webapps/mobile"
+					 overwrite="true" />
+
+		<echo>Unpacking Share WAR...</echo>
+		<unwar src="${alfresco.destination}/tomcat/webapps/share.war"
+					 dest="${alfresco.destination}/tomcat/webapps/share"
+					 overwrite="true" />
+
+
+		<mkdir dir="${alfresco.destination}/tomcat/oldwebapps"/>
+		<move todir="${alfresco.destination}/tomcat/oldwebapps">
+			<fileset dir="${alfresco.destination}/tomcat/webapps" includes="*.war,examples,doc" />
+		</move>
+
+	</target>
+
+
+	<target name="fetch-alfresco-sdk"
+					depends="init"
+					unless="alfresco-sdk-available"
+					description="--> Download Alfresco SDK">
+
+		<echo>Fetching alfresco tomcat from ${alfresco-sdk.download.url} ...</echo>
+		<get src="${alfresco-sdk.download.url}"
+				 dest="${basedir}/alfresco-community-sdk.tar.gz"
+				 usetimestamp="true"
+				/>
+
+	</target>
+
+
+	<target name="unpack-alfresco-sdk"
+					depends="fetch-alfresco-sdk"
+					unless="alfresco-sdk-unpacked"
+					description="--> Unpack alfresco SDK">
+
+		<mkdir dir="${alfresco.sdk}"/>
+
+
+		<untar src="${basedir}/alfresco-community-sdk.tar.gz"
+					 dest="${alfresco.sdk}"
+				compression="gzip"/>
+
+		<mkdir dir="${alfresco.sdk}/src/core"/>
+		<unzip src="${alfresco.sdk}/src/core-src.zip"
+					 dest="${alfresco.sdk}/src/core"/>
+		<jar destfile="${alfresco.sdk}/lib/server/alfresco-core-${alfresco.version}-sources.jar">
+			<fileset dir="${alfresco.sdk}/src/core/java" includes="**/*"/>
+			<metainf dir="${alfresco.sdk}/src/core/meta-inf" includes="**/*"/>
+		</jar>
+
+		<mkdir dir="${alfresco.sdk}/src/remote-api"/>
+		<unzip src="${alfresco.sdk}/src/remote-api-src.zip"
+					 dest="${alfresco.sdk}/src/remote-api"/>
+		<jar destfile="${alfresco.sdk}/lib/server/alfresco-remote-api-${alfresco.version}-sources.jar">
+			<fileset dir="${alfresco.sdk}/src/remote-api/java" includes="**/*"/>
+			<fileset dir="${alfresco.sdk}/src/remote-api/generated" includes="**/*"/>
+			<metainf dir="${alfresco.sdk}/src/remote-api/meta-inf" includes="**/*"/>
+		</jar>
+
+		<mkdir dir="${alfresco.sdk}/src/repository"/>
+		<unzip src="${alfresco.sdk}/src/repository-src.zip"
+					 dest="${alfresco.sdk}/src/repository"/>
+		<jar destfile="${alfresco.sdk}/lib/server/alfresco-repository-${alfresco.version}-sources.jar">
+			<fileset dir="${alfresco.sdk}/src/repository/java" includes="**/*"/>
+			<metainf dir="${alfresco.sdk}/src/repository/meta-inf" includes="**/*"/>
+		</jar>
+
+		<mkdir dir="${alfresco.sdk}/src/web-client"/>
+		<unzip src="${alfresco.sdk}/src/web-client-src.zip"
+					 dest="${alfresco.sdk}/src/web-client"/>
+		<jar destfile="${alfresco.sdk}/lib/server/alfresco-web-client-${alfresco.version}-sources.jar">
+			<fileset dir="${alfresco.sdk}/src/web-client/java" includes="**/*"/>
+			<metainf dir="${alfresco.sdk}/src/web-client/meta-inf" includes="**/*"/>
+		</jar>
+
+		<mkdir dir="${alfresco.sdk}/src/web-framework"/>
+		<unzip src="${alfresco.sdk}/src/web-framework-src.zip"
+					 dest="${alfresco.sdk}/src/web-framework"/>
+		<jar destfile="${alfresco.sdk}/lib/server/alfresco-web-framework-${alfresco.version}-sources.jar">
+			<fileset dir="${alfresco.sdk}/src/web-framework/java" includes="**/*"/>
+		</jar>
+
+		<mkdir dir="${alfresco.sdk}/src/webservice-client"/>
+		<unzip src="${alfresco.sdk}/src/web-service-client-src.zip"
+					 dest="${alfresco.sdk}/src/web-service-client"/>
+		<jar destfile="${alfresco.sdk}/lib/remote/alfresco-web-service-client-${alfresco.version}-sources.jar">
+			<fileset dir="${alfresco.sdk}/src/web-service-client" includes="**/*"/>
+		</jar>
+
+		<mkdir dir="${alfresco.sdk}/src/webscript-framework"/>
+		<unzip src="${alfresco.sdk}/src/webscript-framework-src.zip"
+					 dest="${alfresco.sdk}/src/webscript-framework"/>
+		<jar destfile="${alfresco.sdk}/lib/server/alfresco-webscript-framework-${alfresco.version}-sources.jar">
+			<fileset dir="${alfresco.sdk}/src/webscript-framework/java" includes="**/*"/>
+		</jar>
+
+	</target>
+
+
+	<target name="install-alfresco-sdk"
+					depends="unpack-alfresco-sdk"
+					description="--> Install Alfresco SDK jars into maven local repository.">
+
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=core -Dversion=${alfresco.version} -Dpackaging=jar -Dfile=alfresco-core-${alfresco.version}.jar"/>
+		</exec>
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=core -Dversion=${alfresco.version} -Dpackaging=jar -Dclassifier=sources -Dfile=alfresco-core-${alfresco.version}-sources.jar"/>
+		</exec>
+
+
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=remote-api -Dversion=${alfresco.version} -Dpackaging=jar -Dfile=alfresco-remote-api-${alfresco.version}.jar"/>
+		</exec>
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=remote-api -Dversion=${alfresco.version} -Dpackaging=jar -Dclassifier=sources -Dfile=alfresco-remote-api-${alfresco.version}-sources.jar"/>
+		</exec>
+
+
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=repository -Dversion=${alfresco.version} -Dpackaging=jar -Dfile=alfresco-repository-${alfresco.version}.jar"/>
+		</exec>
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=repository -Dversion=${alfresco.version} -Dpackaging=jar -Dclassifier=sources -Dfile=alfresco-repository-${alfresco.version}-sources.jar"/>
+		</exec>
+
+
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=web-client -Dversion=${alfresco.version} -Dpackaging=jar -Dfile=alfresco-web-client-${alfresco.version}.jar"/>
+		</exec>
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=web-client -Dversion=${alfresco.version} -Dpackaging=jar -Dclassifier=sources -Dfile=alfresco-web-client-${alfresco.version}-sources.jar"/>
+		</exec>
+
+
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=webscript-framework -Dversion=${alfresco.version} -Dpackaging=jar -Dfile=alfresco-webscript-framework-${alfresco.version}.jar"/>
+		</exec>
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/server" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=webscript-framework -Dversion=${alfresco.version} -Dpackaging=jar -Dclassifier=sources -Dfile=alfresco-webscript-framework-${alfresco.version}-sources.jar"/>
+		</exec>
+
+
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/remote" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=webservice-client -Dversion=${alfresco.version} -Dpackaging=jar -Dfile=alfresco-web-service-client-${alfresco.version}.jar"/>
+		</exec>
+		<exec executable="mvn" dir="${alfresco.sdk}/lib/remote" failonerror="true">
+			<arg line="install:install-file -DgroupId=org.alfresco -DartifactId=webservice-client -Dversion=${alfresco.version} -Dpackaging=jar -Dclassifier=sources -Dfile=alfresco-web-service-client-${alfresco.version}-sources.jar"/>
+		</exec>
+
+
+	</target>
+
+
+	<target name="compile-alfresco"
+					depends="unpack-alfresco">
+
+
+		<echo>Building Alfresco...</echo>
+		<exec executable="mvn" dir="${basedir}" failonerror="true">
+			<arg line="package"/>
+		</exec>
+		<mkdir dir="${alfresco.destination}/tomcat/webapps/alfresco"/>
+		<copy todir="${alfresco.destination}/tomcat/webapps/alfresco">
+			<fileset dir="${basedir}/target/alfresco" includes="**/*"/>
+		</copy>
+
+		<echo>Customizing Alfresco's Tomcat... </echo>
+		<copy todir="${alfresco.destination}/tomcat"
+					filtering="true" overwrite="true">
+			<filterset refid="app.filter"/>
+			<fileset dir="${basedir}/tomcat">
+				<include name="**/*"/>
+				<exclude name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="${alfresco.destination}/tomcat"
+					filtering="false">
+			<fileset dir="${basedir}/tomcat">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+
+		<chmod perm="ug+x">
+			<fileset dir="${alfresco.destination}/tomcat/bin">
+				<include name="*.sh"/>
+			</fileset>
+		</chmod>
+
+	</target>
+
+	<target name="all" depends="compile-alfresco">
+
+		<mkdir dir="${basedir}/target"/>
+
+	</target>
+
+</project>

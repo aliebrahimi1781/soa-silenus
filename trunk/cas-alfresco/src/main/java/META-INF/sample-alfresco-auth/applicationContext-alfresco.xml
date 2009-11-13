@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:tx="http://www.springframework.org/schema/tx"
+			 xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+
+	<!-- External authentication -->
+	<bean id="externalAuthentication" class="es.silenus.cas.alfresco.AlfrescoAuthenticationHandler">
+		<property name="endpointAddress" value="${alfresco.api.url}"/>
+		<property name="userDetailsService" ref="userDetailsService"/>
+	</bean>
+
+	<!-- Defines role mappings -->
+	<bean id="userDetailsService" class="es.silenus.cas.alfresco.AlfrescoUserDetailsService">
+		<property name="endpointAddress" value="${alfresco.api.url}"/>
+		<property name="endpointUser" value="${alfresco.api.user}"/>
+		<property name="endpointPassword" value="${alfresco.api.password}"/>
+		<property name="roleMapping">
+			<map>
+				<entry key="Silenus Consultoría" value="ROLE_ADMIN"/>
+			</map>
+		</property>
+	</bean>
+
+
+	<!-- External credential resolver -->
+	<bean id="externalCredentialToPrincipalResolver" class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver" />
+
+
+	<!-- Attribute repository -->
+	<bean id="attributeRepository" class="org.jasig.services.persondir.support.StubPersonAttributeDao">
+		<property name="backingMap">
+			<map>
+				<entry key="uid" value="uid" />
+				<entry key="eduPersonAffiliation" value="eduPersonAffiliation" />
+				<entry key="groupMembership" value="groupMembership" />
+			</map>
+		</property>
+	</bean>
+
+</beans>

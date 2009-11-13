@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>es.silenus</groupId>
+	<artifactId>alfresco-sso</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0</version>
+	<name>alfresco-sso</name>
+	<description>Alfresco SSO addons</description>
+	<inceptionYear>2009</inceptionYear>
+	<url>http://www.silenus-consultoria.es</url>
+
+	<organization>
+		<name>Silenus Consultoria, S.L.U.</name>
+		<url>http://www.silenus-consultoria.es</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>malonso</id>
+			<name>Mariano Alonso Ortiz</name>
+			<email>malonso@silenus-consultoria.es</email>
+			<organization>Silenus Consultoria, S.L.U.</organization>
+			<organizationUrl>http://www.silenus-consultoria.es</organizationUrl>
+		</developer>
+	</developers>
+
+	<build>
+
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${maven.compile.source}</source>
+					<target>${maven.compile.target}</target>
+					<debug>${maven.compiler.debug}</debug>
+					<optimize>${maven.compiler.optimize}</optimize>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>repository</artifactId>
+			<version>${alfresco.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>core</artifactId>
+			<version>${alfresco.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>web-client</artifactId>
+			<version>${alfresco.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>cas</groupId>
+			<artifactId>casclient</artifactId>
+			<version>2.1.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>1.2_08</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.portlet</groupId>
+			<artifactId>portlet-api</artifactId>
+			<version>1.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.0.8</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.0.1B</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/3rd-party/src/ -->
+
+		<!-- -->
+		<dependency>
+			<groupId>acegisecurity</groupId>
+			<artifactId>acegi-security</artifactId>
+			<version>0.8.2</version>
+			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>servletapi</groupId>
+					<artifactId>servletapi</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jstl</groupId>
+					<artifactId>jstl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>springframework</groupId>
+					<artifactId>spring-mock</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>cas</groupId>
+					<artifactId>casclient</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>jdk16</id>
+			<activation>
+				<jdk>1.6</jdk>
+			</activation>
+			<properties>
+				<maven.compile.source>1.5</maven.compile.source>
+				<maven.compile.target>1.5</maven.compile.target>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+				<alfresco.version>3.2r</alfresco.version>
+			</properties>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>silenus</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<name>Silenus Consultoria Maven Repository</name>
+			<url>
+				http://svn.silenus-consultoria.es/nexus/content/groups/public
+			</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>silenus</id>
+			<name>Silenus Consultoria Maven Plugin Repository</name>
+			<url>
+				http://svn.silenus-consultoria.es/nexus/content/groups/public
+			</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+		<repository>
+			<id>silenus-nexus</id>
+			<name>Silenus Nexus</name>
+			<url>http://svn.silenus-consultoria.es/nexus/content/repositories/releases</url>
+		</repository>
+		<!-- use the following if you ARE using a snapshot version. -->
+		<snapshotRepository>
+			<id>silenus-nexus-snapshot</id>
+			<name>Silenus Nexus Snapshot</name>
+			<url>http://svn.silenus-consultoria.es/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+
+</project>

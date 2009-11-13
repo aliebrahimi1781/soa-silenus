@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>es.silenus</groupId>
+  <artifactId>cas-alfresco</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>cas-alfresco</name>
+	<description>CAS Addons</description>
+	<inceptionYear>2009</inceptionYear>
+  <url>http://www.silenus-consultoria.es</url>
+
+	<organization>
+		<name>Silenus Consultoria, S.L.U.</name>
+		<url>http://www.silenus-consultoria.es</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>malonso</id>
+			<name>Mariano Alonso Ortiz</name>
+			<email>malonso@silenus-consultoria.es</email>
+			<organization>Silenus Consultoria, S.L.U.</organization>
+			<organizationUrl>http://www.silenus-consultoria.es</organizationUrl>
+		</developer>
+	</developers>
+
+	<build>
+
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${maven.compile.source}</source>
+					<target>${maven.compile.target}</target>
+					<debug>${maven.compiler.debug}</debug>
+					<optimize>${maven.compiler.optimize}</optimize>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+
+  <dependencies>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-support-ldap</artifactId>
+			<version>${cas.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring.security.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Alfresco dependencies -->
+		<dependency>
+			<groupId>org.apache.axis</groupId>
+			<artifactId>axis</artifactId>
+			<version>1.4</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis</groupId>
+			<artifactId>axis-jaxrpc</artifactId>
+			<version>1.4</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis</groupId>
+			<artifactId>axis-saaj</artifactId>
+			<version>1.4</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>1.5.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-discovery</groupId>
+			<artifactId>commons-discovery</artifactId>
+			<version>0.4</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>wss4j</groupId>
+			<artifactId>wss4j</artifactId>
+			<version>1.5.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>xml-security</groupId>
+			<artifactId>xmlsec</artifactId>
+			<version>1.3.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>opensaml</artifactId>
+			<version>1.1b</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>webservice-client</artifactId>
+			<version>${alfresco.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+	<profiles>
+		<profile>
+			<id>jdk16</id>
+			<activation>
+				<jdk>1.6</jdk>
+			</activation>
+			<properties>
+				<maven.compile.source>1.5</maven.compile.source>
+				<maven.compile.target>1.5</maven.compile.target>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+				<cas.version>3.3.3</cas.version>
+				<spring.version>2.5.6</spring.version>
+				<spring.security.version>2.0.4</spring.security.version>
+				<alfresco.version>3.2r</alfresco.version>
+			</properties>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>silenus</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<name>Silenus Consultoria Maven Repository</name>
+			<url>
+				http://svn.silenus-consultoria.es/nexus/content/groups/public
+			</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>silenus</id>
+			<name>Silenus Consultoria Maven Plugin Repository</name>
+			<url>
+				http://svn.silenus-consultoria.es/nexus/content/groups/public
+			</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+		<repository>
+			<id>silenus-nexus</id>
+			<name>Silenus Nexus</name>
+			<url>http://svn.silenus-consultoria.es/nexus/content/repositories/releases</url>
+		</repository>
+		<!-- use the following if you ARE using a snapshot version. -->
+		<snapshotRepository>
+			<id>silenus-nexus-snapshot</id>
+			<name>Silenus Nexus Snapshot</name>
+			<url>http://svn.silenus-consultoria.es/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>

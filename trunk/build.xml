@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="SOA" default="all">
+
+
+	<target name="init">
+
+		<!-- First load user defined properties to override the build -->
+		<loadproperties>
+			<file file="${basedir}/build.properties" />
+		</loadproperties>
+
+		<!-- Load environment properties -->
+		<property environment="env"/>
+
+		<echoproperties destfile="${basedir}/env.properties" prefix="env."/>
+
+
+		<!-- Build classpath -->
+		<path id="build.classpath">
+			<fileset dir="${basedir}/alfresco/tomcat/lib" includes="**/*.jar"/>
+		</path>
+
+		<filterset id="app.filter" >
+			<filtersfile file="${basedir}/build.properties"/>
+			<filtersfile file="${basedir}/env.properties"/>
+		</filterset>
+
+	</target>
+
+
+	<target name="all"
+					depends="compile,create-databases">
+
+		<!-- TODO: build alfresco, cas... -->
+
+		<mkdir dir="${basedir}/target"/>
+
+		<copy todir="${basedir}/target" filtering="true">
+			<filterset refid="app.filter"/>
+
+			<fileset dir="${basedir}/conf">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+
+	</target>
+
+
+	<target name="compile"
+					depends="init">
+
+		<echo>Building Alfresco...</echo>
+		<ant antfile="${basedir}/alfresco/build.xml" target="compile-alfresco" inheritall="false" inheritrefs="false"/>
+
+
+		<echo>Building CAS...</echo>
+		<exec executable="mvn" dir="${basedir}/cas" failonerror="true">
+			<arg line="package"/>
+		</exec>
+		<mkdir dir="${alfresco.destination}/tomcat/webapps/cas"/>
+		<copy todir="${alfresco.destination}/tomcat/webapps/cas">
+			<fileset dir="${basedir}/cas/target/cas" includes="**/*"/>
+		</copy>
+		
+
+	</target>
+
+
+	<target name="drop-databases" depends="init">
+
+
+		<sql driver="${admin.database.driver}"
+				 classpathref="build.classpath"
+				 url="${admin.database.url}"
+				 userid="${admin.database.user}"
+				 password="${admin.database.password}">
+			drop database if exists `${alfresco.database.name}`;
+			drop database if exists `${cas.database.name}`;
+			drop database if exists `${jbpm.database.name}`;
+		</sql>
+	</target>
+
+
+	<target name="create-databases" depends="init">
+
+		<sql driver="${admin.database.driver}"
+				 classpathref="build.classpath"
+				 url="${admin.database.url}"
+				 userid="${admin.database.user}"
+				 password="${admin.database.password}">
+			create database if not exists `${cas.database.name}` default character set utf8 collate utf8_general_ci;
+			create database if not exists `${alfresco.database.name}` default character set utf8 collate utf8_general_ci;
+			create database if not exists `${jbpm.database.name}` default character set utf8 collate utf8_general_ci;
+		</sql>
+
+	</target>
+
+
+
+
+</project>

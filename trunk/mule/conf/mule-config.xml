@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xmlns:spring="http://www.springframework.org/schema/beans"
+			xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+			xmlns:vm="http://www.mulesource.org/schema/mule/vm/2.2"
+			xmlns:stdio="http://www.mulesource.org/schema/mule/stdio/2.2"
+			xmlns:bpm="http://www.mulesource.org/schema/mule/bpm/2.2"
+			xmlns:mxml="http://www.mulesource.org/schema/mule/xml/2.2"
+			xsi:schemaLocation="
+       http://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
+       http://www.mulesource.org/schema/mule/jms/2.2 http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd
+       http://www.mulesource.org/schema/mule/stdio/2.2 http://www.mulesource.org/schema/mule/stdio/2.2/mule-stdio.xsd
+       http://www.mulesource.org/schema/mule/vm/2.2 http://www.mulesource.org/schema/mule/vm/2.2/mule-vm.xsd
+       http://www.mulesource.org/schema/mule/bpm/2.2 http://www.mulesource.org/schema/mule/bpm/2.2/mule-bpm.xsd
+       http://www.mulesource.org/schema/mule/xml/2.2 http://www.mulesource.org/schema/mule/xml/2.2/mule-xml.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<description>
+		Proof of Concept for SOA with opensource projects
+	</description>
+
+	<spring:beans>
+		<spring:import resource="applicationContext.xml"/>
+	</spring:beans>
+
+	<spring:bean id="bpm" class="es.silenus.soa.mule.transports.jbpm4.Bpm4">
+		<spring:property name="processEngine" ref="processEngine"/>
+	</spring:bean>
+
+	<!-- Connectors -->
+
+	<jms:activemq-connector name="jmsConnector" brokerURL="${activemq.broker.url}"/>
+
+	<bpm:connector name="jbpmConnector" bpms-ref="bpm"/>
+
+	<vm:connector name="vmConnector" />
+
+	<!-- Endpoints -->
+
+	<endpoint name="crmAccountEndpoint" address="jms://crm-account" connector-ref="jmsConnector"/>
+	<endpoint name="crmOpportunityEndpoint" address="jms://crm-opportunity" connector-ref="jmsConnector"/>
+	<endpoint name="erpProjectEndpoint" address="jms://erp-project" connector-ref="jmsConnector"/>
+
+	<endpoint name="vmNewOpportunityEndpoint" address="vm://opportunity" connector-ref="vmConnector" />
+	<endpoint name="vmGainedOpportunityEndpoint" address="vm://gained-opportunity" connector-ref="vmConnector" />
+
+	<endpoint name="bpmAccountEndpoint" address="bpm://ACC" connector-ref="jbpmConnector"/>
+	<endpoint name="bpmOpportunityEndpoint" address="bpm://OPP" connector-ref="jbpmConnector"/>
+	<endpoint name="bpmGainedOpportunityEndpoint" address="bpm://GOPP" connector-ref="jbpmConnector"/>
+
+	
+	<!-- Models -->
+
+	<model name="main">
+
+		<service name="CrmAccountService">
+			<description>
+				Receives a CRM JMS event via STOMP and activates the ACC BPM.
+				The message must be converted into a string parameter.
+			</description>
+			<inbound>
+			 	<jms:inbound-endpoint ref="crmAccountEndpoint">
+					<transformers>
+						<jms:jmsmessage-to-object-transformer/>
+						<mxml:jxpath-extractor-transformer expression="/Account/name" singleResult="true"/>
+					</transformers>
+				</jms:inbound-endpoint>
+			</inbound>
+
+			<log-component />
+
+			<outbound>
+				<pass-through-router>
+					<outbound-endpoint ref="bpmAccountEndpoint"/>
+				</pass-through-router>
+			</outbound>
+		</service>
+
+		<service name="CrmOpportunityService">
+			<description>
+				Receives a CRM JMS event via STOMP and multicasts this message to the new opportunity service
+				and the gained opportunity service. Message is converted, when received into an object.
+			</description>
+	 		<inbound>
+			 	<jms:inbound-endpoint ref="crmOpportunityEndpoint">
+					 <transformers>
+						<jms:jmsmessage-to-object-transformer/>
+					</transformers>
+				</jms:inbound-endpoint>
+			</inbound>
+
+			<log-component />
+			
+			<outbound>
+				<multicasting-router>
+					<outbound-endpoint ref="vmNewOpportunityEndpoint"/>
+					<outbound-endpoint ref="vmGainedOpportunityEndpoint"/>
+				</multicasting-router>
+			</outbound>
+		</service>
+
+		<service name="NewOpportunityService">
+			<description>
+				Receives an VM object message and activates the OPP BPM.
+				The message is transformed into a string parameter.
+			</description>
+			<inbound>
+				<vm:inbound-endpoint ref="vmNewOpportunityEndpoint">
+					<transformers>
+						<mxml:jxpath-extractor-transformer expression="concat(concat(/Opportunity/account_name, '/'), /Opportunity/name)" singleResult="true"/>
+					</transformers>
+				</vm:inbound-endpoint>
+			</inbound>
+
+			<log-component/>
+
+			<outbound>
+				<pass-through-router>
+					<outbound-endpoint ref="bpmOpportunityEndpoint"/>
+				</pass-through-router>
+			</outbound>
+		</service>
+
+		<service name="GainedOpportunityService">
+			<description>
+				Receives an VM object message and activates the GOPP BPM.
+				Incoming message is filtered with an JXPath filter.
+			</description>
+			<inbound>
+				<vm:inbound-endpoint ref="vmGainedOpportunityEndpoint"/>
+				<selective-consumer-router>
+					<expression-filter evaluator="jxpath" expression="/Opportunity/sales_stage='Closed Won'"/>
+				</selective-consumer-router>
+			</inbound>
+
+			<log-component/>
+
+			<outbound>
+				<pass-through-router>
+					<outbound-endpoint ref="bpmGainedOpportunityEndpoint"/>
+				</pass-through-router>
+			</outbound>
+		</service>
+
+
+		<!-- TODO: fix this -->
+		<service name="ErpProjectService">
+			<inbound>
+			 	<jms:inbound-endpoint ref="erpProjectEndpoint"/>
+			</inbound>
+
+			<log-component />
+			
+			<outbound>
+				<pass-through-router>
+					<stdio:outbound-endpoint system="OUT"/>
+				</pass-through-router>
+			</outbound>
+		</service>
+
+	</model>
+
+
+</mule>

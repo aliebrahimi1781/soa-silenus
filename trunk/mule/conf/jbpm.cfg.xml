@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jbpm-configuration>
+
+	<!--  												 -->
+	<!--   PROCESS ENGINE CONTEXT  -->
+	<!--  												 -->
+
+	<process-engine-context>
+
+		<!-- Businness calendar -->
+		<business-calendar>
+			<monday hours="9:30-14:00 and 16:30-20:30" />
+			<tuesday  hours="9:30-14:00 and 16:30-20:30" />
+			<wednesday  hours="9:30-14:00 and 16:30-20:30" />
+			<thursday  hours="9:30-14:00 and 16:30-20:30" />
+			<friday  hours="9:00-14:00" />
+			<holiday period="01/07/2008 - 31/08/2008" />
+		</business-calendar>
+
+
+		<!-- Basic services -->
+
+		<repository-service />
+    <repository-cache />
+    <execution-service />
+    <history-service />
+    <management-service />
+    <identity-service />
+    <task-service />
+
+
+		<!-- Deployer -->
+		<deployer-manager>
+      <jpdl-deployer />
+    </deployer-manager>
+
+		<command-service name="txRequiredCommandService">
+      <retry-interceptor />
+      <environment-interceptor />
+			<spring-transaction-interceptor /><!-- current="true" -->			
+    </command-service>
+
+		<object class="org.jbpm.pvm.internal.id.DatabaseDbidGenerator">
+      <field name="commandService"><ref object="txRequiredCommandService" /></field>
+    </object>
+
+    <object class="org.jbpm.pvm.internal.id.DatabaseIdComposer" init="eager" />
+
+
+		<!-- Job Executor -->
+		<job-executor/>
+
+
+		<!-- Added spring as read-context -->
+		<script-manager default-expression-language="juel"
+										default-script-language="juel"
+										read-contexts="execution, environment, process-engine, spring"
+										write-context="">
+			<script-language name="juel"
+											 factory="org.jbpm.pvm.internal.script.JuelScriptEngineFactory" />
+		</script-manager>
+
+
+		<!-- TODO: change mapping for certain variables -->
+
+		<types resource="es/silenus/soa/jbpm4/jbpm.variable.types.xml" />
+
+		<address-resolver />
+
+
+	</process-engine-context>
+
+	<!--  												 -->
+	<!--   TRANSACTION CONTEXT	   -->
+	<!--  												 -->
+
+	<transaction-context>
+		<repository-session />
+		<db-session />
+
+		<identity-session />
+		<message-session />
+		<timer-session />
+		<history-session />
+		<!-- mail-session>
+			<mail-server>
+				<session-properties resource="jbpm.mail.properties" />
+			</mail-server>
+		</mail-session -->
+
+		<!-- Need to set explicitly that we don't want jbpm to create sessions -->
+		<hibernate-session current="true" />
+	</transaction-context>
+</jbpm-configuration>

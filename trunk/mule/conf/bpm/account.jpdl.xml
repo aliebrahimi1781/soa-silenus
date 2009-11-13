@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="accounts" key="ACC"
+
+				 xmlns="http://jbpm.org/4.2/jpdl"
+				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://jbpm.org/4.2/jpdl http://docs.jboss.org/jbpm/xsd/jpdl-4.2.xsd">
+
+
+	<start>
+		<transition to="Create Folder" />
+	</start>
+
+	<java name="Create Folder" expr="${folderService}" method="createSubFolder">
+		<arg><string value="/Cuentas" /> </arg>
+		<arg><object expr="#{incoming}"/></arg>
+		<transition to="Completed"/>
+	</java>
+
+	<end name="Completed" />
+
+</process>

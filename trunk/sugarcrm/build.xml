@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="SugarCRM SOA" basedir="." default="all">
+
+
+	<target name="init">
+		<!-- First load user defined properties to override the build -->
+		<loadproperties>
+			<file file="${basedir}/build.properties" />
+		</loadproperties>
+
+		<!-- Load environment properties -->
+		<property environment="env"/>
+
+		<condition property="sugar-available">
+			<and>
+				<available file="${sugar.file}"/>
+			</and>
+		</condition>
+
+		<condition property="sugar-unpacked">
+			<and>
+				<available file="${sugar.destination}"/>
+			</and>
+		</condition>
+
+	</target>
+
+
+	<target name="prepare-modules"
+					depends="init"
+					description="--> Packages SugarCRM modules">
+
+		<mkdir dir="${basedir}/target"/>
+		<zip file="${basedir}/target/soa-crm.zip">
+			<fileset dir="${basedir}/modules/soa" includes="**/*"/>
+		</zip>
+
+	</target>
+
+	<target name="fetch-sugar"
+					depends="init"
+					unless="sugar-available"
+					description="--> Download SugarCRM">
+
+		<echo>Fetching sugar from ${sugar.download.url} ...</echo>
+		<get src="${sugar.download.url}"
+				 dest="${sugar.file}"
+				 usetimestamp="true"
+				/>
+
+	</target>
+
+
+	<!-- Make sure you have write access to ${sugar.destination}  -->
+	<target name="unpack-sugar"
+					depends="fetch-sugar"
+					unless="sugar-unpacked"
+					description="--> Unpack sugarcrm">
+
+		<echo>Unpacking SugarCRM to ${sugar.destination}...</echo>
+		<mkdir dir="${sugar.destination}"/>
+
+		<unzip src="${sugar.file}"
+					 dest="${sugar.destination}"
+					 overwrite="true">
+			<mapper type="glob" from="${sugar.package.folder}/*" to="*"/>
+		</unzip>
+
+
+		<exec executable="sudo">
+			<arg line="chown -R ${www.user}.${www.user} ${sugar.destination}"/>
+		</exec>
+
+	</target>
+
+
+
+	<target name="all"
+					depends="unpack-sugar,prepare-modules"
+					description="--> Default target">
+	</target>
+
+</project>

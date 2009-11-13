@@ -1,0 +1,76 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 4 (0x4)
+        Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=ES, ST=LU, L=Lugo, O=Silenus Consultor\xC3\xADa, S.L.U., CN=Silenus Consultor\xC3\xADa, S.L.U. CA/emailAddress=admin@silenus-consultoria.es
+        Validity
+            Not Before: Nov  9 18:10:54 2009 GMT
+            Not After : Nov  7 18:10:54 2019 GMT
+        Subject: C=ES, ST=LU, L=Lugo, O=Silenus Consultor\xC3\xADa, S.L.U., CN=soa.silenus-consultoria.es/emailAddress=admin@silenus-consultoria.es
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (1024 bit)
+                Modulus (1024 bit):
+                    00:c8:91:0d:53:63:84:4a:33:27:75:04:de:a0:18:
+                    3a:84:d6:68:04:cc:67:db:11:db:00:bf:dd:7b:32:
+                    15:9c:f0:ab:83:e4:a9:a9:a1:d7:a9:9d:99:cc:e1:
+                    a2:70:c7:ed:75:41:2b:db:d4:44:d4:26:ea:03:fe:
+                    43:11:ef:9c:cd:3a:65:47:70:28:6b:e5:e8:9e:41:
+                    13:ef:02:d9:dc:9d:1a:26:32:1b:1d:98:cd:4f:c3:
+                    4e:b3:91:18:42:6b:7b:1d:34:4d:53:dc:92:52:24:
+                    68:43:be:d0:3b:3e:34:13:fb:8f:b8:e2:bd:68:fe:
+                    7b:5c:03:3e:c4:9d:ac:9e:03
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Cert Type: 
+                SSL Server
+            Netscape Comment: 
+                Easy-RSA Generated Server Certificate
+            X509v3 Subject Key Identifier: 
+                20:82:F3:F7:75:F7:B2:56:F1:1E:32:9F:E5:6E:EC:BD:FE:55:80:C6
+            X509v3 Authority Key Identifier: 
+                keyid:B2:D9:69:D0:F1:16:0A:7C:E6:7C:E6:37:A8:CF:DB:BD:7E:73:2D:21
+                DirName:/C=ES/ST=LU/L=Lugo/O=Silenus Consultor\xC3\xADa, S.L.U./CN=Silenus Consultor\xC3\xADa, S.L.U. CA/emailAddress=admin@silenus-consultoria.es
+                serial:F8:81:2C:B9:7C:CF:49:F0
+
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment
+    Signature Algorithm: sha1WithRSAEncryption
+        31:e9:01:6f:57:37:8c:a5:cd:bc:05:b9:7e:ab:c6:9a:60:cc:
+        44:a8:14:60:75:6b:8d:58:f5:13:56:33:a6:a4:32:0b:9a:cf:
+        7a:1c:e0:84:03:e4:5c:54:ba:a9:e8:c2:4a:7a:d1:fc:ec:1d:
+        34:69:3e:05:8a:7b:df:29:8d:16:2b:f8:87:28:d5:73:7a:7e:
+        92:58:41:1c:e9:9d:19:87:e5:15:ee:20:04:68:47:ba:8f:06:
+        7a:f1:a9:67:6c:df:ed:da:58:43:97:0a:f0:9a:75:22:62:16:
+        40:21:95:d5:6f:92:da:70:ea:25:27:b4:1d:bf:e2:44:a2:c9:
+        af:55
+-----BEGIN CERTIFICATE-----
+MIIEOzCCA6SgAwIBAgIBBDANBgkqhkiG9w0BAQUFADCBpzELMAkGA1UEBhMCRVMx
+CzAJBgNVBAgTAkxVMQ0wCwYDVQQHEwRMdWdvMSUwIwYDVQQKFBxTaWxlbnVzIENv
+bnN1bHRvcsOtYSwgUy5MLlUuMSgwJgYDVQQDFB9TaWxlbnVzIENvbnN1bHRvcsOt
+YSwgUy5MLlUuIENBMSswKQYJKoZIhvcNAQkBFhxhZG1pbkBzaWxlbnVzLWNvbnN1
+bHRvcmlhLmVzMB4XDTA5MTEwOTE4MTA1NFoXDTE5MTEwNzE4MTA1NFowgaIxCzAJ
+BgNVBAYTAkVTMQswCQYDVQQIEwJMVTENMAsGA1UEBxMETHVnbzElMCMGA1UEChQc
+U2lsZW51cyBDb25zdWx0b3LDrWEsIFMuTC5VLjEjMCEGA1UEAxMac29hLnNpbGVu
+dXMtY29uc3VsdG9yaWEuZXMxKzApBgkqhkiG9w0BCQEWHGFkbWluQHNpbGVudXMt
+Y29uc3VsdG9yaWEuZXMwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMiRDVNj
+hEozJ3UE3qAYOoTWaATMZ9sR2wC/3XsyFZzwq4Pkqamh16mdmczhonDH7XVBK9vU
+RNQm6gP+QxHvnM06ZUdwKGvl6J5BE+8C2dydGiYyGx2YzU/DTrORGEJrex00TVPc
+klIkaEO+0Ds+NBP7j7jivWj+e1wDPsSdrJ4DAgMBAAGjggF4MIIBdDAJBgNVHRME
+AjAAMBEGCWCGSAGG+EIBAQQEAwIGQDA0BglghkgBhvhCAQ0EJxYlRWFzeS1SU0Eg
+R2VuZXJhdGVkIFNlcnZlciBDZXJ0aWZpY2F0ZTAdBgNVHQ4EFgQUIILz93X3slbx
+HjKf5W7svf5VgMYwgdwGA1UdIwSB1DCB0YAUstlp0PEWCnzmfOY3qM/bvX5zLSGh
+ga2kgaowgacxCzAJBgNVBAYTAkVTMQswCQYDVQQIEwJMVTENMAsGA1UEBxMETHVn
+bzElMCMGA1UEChQcU2lsZW51cyBDb25zdWx0b3LDrWEsIFMuTC5VLjEoMCYGA1UE
+AxQfU2lsZW51cyBDb25zdWx0b3LDrWEsIFMuTC5VLiBDQTErMCkGCSqGSIb3DQEJ
+ARYcYWRtaW5Ac2lsZW51cy1jb25zdWx0b3JpYS5lc4IJAPiBLLl8z0nwMBMGA1Ud
+JQQMMAoGCCsGAQUFBwMBMAsGA1UdDwQEAwIFoDANBgkqhkiG9w0BAQUFAAOBgQAx
+6QFvVzeMpc28Bbl+q8aaYMxEqBRgdWuNWPUTVjOmpDILms96HOCEA+RcVLqp6MJK
+etH87B00aT4FinvfKY0WK/iHKNVzen6SWEEc6Z0Zh+UV7iAEaEe6jwZ68alnbN/t
+2lhDlwrwmnUiYhZAIZXVb5LacOolJ7Qdv+JEosmvVQ==
+-----END CERTIFICATE-----
