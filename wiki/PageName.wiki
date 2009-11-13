@@ -1,0 +1,13 @@
+#summary One-sentence summary of this page.
+
+= Introducción =
+
+Las instrucciones detalladas para la construcción se encuentran en el sistema de control de versiones: [http://code.google.com/p/soa-silenus/source/browse/trunk/README.txt aquí]
+
+
+= Documentación Técnica =
+
+Parte de la *documentación técnica* está disponible para su descarga:
+
+ * Análisis: [http://code.google.com/p/soa-silenus/source/browse/trunk/doc/soa-analisis.pdf Documento de Análisis]
+ * Diseño: [http://code.google.com/p/soa-silenus/source/browse/trunk/doc/soa-diseño.pdf Documento de Diseño]
