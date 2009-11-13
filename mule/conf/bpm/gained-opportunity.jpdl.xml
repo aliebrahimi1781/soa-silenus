@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="gained-opportunities" key="GOPP"
+
+				 xmlns="http://jbpm.org/4.2/jpdl"
+				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://jbpm.org/4.2/jpdl http://docs.jboss.org/jbpm/xsd/jpdl-4.2.xsd">
+
+
+	<start>
+		<transition to="Completed" />
+	</start>
+
+	<!--
+	TODO: Create account in ERP, Create Project in ERP, Create Folder in DM
+
+	-->
+
+
+	<end name="Completed" />
+
+</process>

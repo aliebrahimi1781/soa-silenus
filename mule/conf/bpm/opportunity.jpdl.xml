@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="opportunities" key="OPP"
+
+				 xmlns="http://jbpm.org/4.2/jpdl"
+				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://jbpm.org/4.2/jpdl http://docs.jboss.org/jbpm/xsd/jpdl-4.2.xsd">
+
+
+	<start>
+		<transition to="Create TO Folder" />
+	</start>
+
+	<java name="Create TO Folder" expr="${folderService}" method="createFolder">
+		<arg><object expr="/Cuentas/#{incoming}/Oferta Técnica"/></arg>
+		<transition to="Create SO Folder"/>
+	</java>
+
+	<java name="Create SO Folder" expr="${folderService}" method="createFolder">
+		<arg><object expr="/Cuentas/#{incoming}/Oferta Comercial"/></arg>
+		<transition to="Completed"/>
+	</java>
+
+	<end name="Completed" />
+
+</process>

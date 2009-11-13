@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:tx="http://www.springframework.org/schema/tx"
+			 xsi:schemaLocation="http://www.springframework.org/schema/beans
+			 	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			 	http://www.springframework.org/schema/tx
+			 	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+	<!-- Properties -->
+	<bean id="properties"
+				class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="placeholderPrefix" value="${"/>
+		<property name="placeholderSuffix" value="}"/>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="ignoreResourceNotFound" value="true"/>
+		<property name="systemPropertiesMode" value="3"/>
+		<property name="locations">
+			<list>
+				<value>file:${mule.base}/conf/mule.properties</value>
+				<value>file:${mule.base}/conf/mule-override.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- ActiveMQ Broker -->
+
+
+	<bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start" destroy-method="stop">
+		<property name="persistent" value="false"/>
+		<property name="transportConnectorURIs">
+			<list>
+				<value>${activemq.broker.url}</value>
+				<value>${activemq.stomp.url}</value>
+			</list>
+		</property>
+		<!-- For persistence:
+		 http://activemq.apache.org/amq-message-store.html
+		 http://activemq.apache.org/kahadb.html
+
+		 http://activemq.apache.org/jms-and-jdbc-operations-in-one-transaction.html
+		 -->
+	</bean>
+
+	<!--  ActiveMQ destinations to use  -->
+
+	<bean id="crmAccountDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<property name="physicalName" value="crm-account"/>
+	</bean>
+	<bean id="crmOpportunityDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<property name="physicalName" value="crm-opportunity"/>
+	</bean>
+	<bean id="erpProjectDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<property name="physicalName" value="erp-project"/>
+	</bean>
+
+
+	<!-- jBPM -->
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jbpm.database.driver}"/>
+		<property name="url" value="${jbpm.database.url}"/>
+		<property name="username" value="${jbpm.database.user}"/>
+		<property name="password" value="${jbpm.database.password}"/>
+	</bean>
+
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="schemaUpdate" value="true"/>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${jbpm.hibernate.dialect}</prop>
+
+				<prop key="current_session_context_class">thread</prop>
+
+				<prop key="hibernate.cache.region_prefix"/>
+				<prop key="hibernate.cache.use_query_cache">false</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+
+				<prop key="hibernate.jdbc.batch_size">0</prop>
+				<prop key="hibernate.jdbc.batch_versioned_data">true</prop>
+				<prop key="hibernate.jdbc.use_streams_for_binary">true</prop>
+				<prop key="hibernate.jdbc.use_scrollable_resultset">true</prop>
+				<prop key="hibernate.jdbc.use_get_generated_keys">false</prop>
+
+				<prop key="hibernate.max_fetch_depth">0</prop>
+				<prop key="hibernate.show_sql">${jbpm.hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${jbpm.hibernate.show_sql}</prop>
+				<prop key="hibernate.generate_statistics">${jbpm.hibernate.show_sql}</prop>
+
+				<prop key="hibernate.hbm2ddl.auto">${jbpm.hibernate.hbm2ddl}</prop>
+
+			</props>
+		</property>
+		<property name="mappingLocations">
+			<list>
+				<value>classpath:jbpm.repository.hbm.xml</value>
+				<value>classpath:jbpm.execution.hbm.xml</value>
+				<value>classpath:jbpm.history.hbm.xml</value>
+				<value>classpath:jbpm.task.hbm.xml</value>
+				<value>classpath:jbpm.identity.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- Transaction manager -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+
+	<!-- Enable the configuration of transactional behavior based on annotations -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+
+	<!-- BPM configuration -->
+
+	<bean id="jbpmConfiguration" class="es.silenus.soa.jbpm4.SpringConfiguration">
+		<property name="configuration" value="file:${mule.base}/conf/jbpm.cfg.xml"/>
+		<property name="processDefinitions">
+			<map>
+				<entry key="ACC" value="file:${mule.base}/conf/bpm/account.jpdl.xml"/>
+				<entry key="OPP" value="file:${mule.base}/conf/bpm/opportunity.jpdl.xml"/>
+				<entry key="GOPP" value="file:${mule.base}/conf/bpm/gained-opportunity.jpdl.xml"/>
+				<!-- TODO: add other Process -->
+			</map>
+		</property>
+		<property name="clearPreviousProcess" value="true"/>
+	</bean>
+
+
+	<!-- BPM Process Engine -->
+
+	<bean id="processEngine" factory-bean="jbpmConfiguration" factory-method="buildProcessEngine"/>
+
+
+	<!-- Alfresco services -->
+
+	<bean id="folderService" class="es.silenus.soa.alfresco.FolderService">
+		<property name="endpointUrl" value="${alfresco.api.url}"/>
+		<property name="endpointUser" value="${alfresco.api.user}"/>
+		<property name="endpointPassword" value="${alfresco.api.password}"/>
+	</bean>
+
+
+</beans>

@@ -1,0 +1,28 @@
+<!-- This file is for tomcat -->
+<Context path="/cas">
+
+	<Resource name="jdbc/cas" auth="Container" type="javax.sql.DataSource"
+						driverClassName="@cas.database.driver@"
+						url="@cas.database.url@" username="@cas.database.user@"
+						password="@cas.database.password@"
+						validationQuery="SELECT 1;"
+						maxActive="100"
+						maxIdle="30"
+						maxWait="10000"/>
+
+	<Resource name="mail/MailSession" auth="Container" type="javax.mail.Session"
+						mail.transport.protocol="smtp"
+						mail.debug="@mail.debug@"
+						mail.smtp.host="@mail.host@"
+
+						mail.smtp.auth="@mail.auth@"
+
+						mail.smtp.user="@mail.user@"
+						mail.smtp.password="@mail.password@"
+
+						username="@mail.user@"
+						password="@mail.password@"
+
+			/>
+
+</Context>

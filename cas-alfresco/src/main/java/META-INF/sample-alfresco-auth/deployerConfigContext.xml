@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	| deployerConfigContext.xml centralizes into one file some of the declarative configuration that
+	| all CAS deployers will need to modify.
+	|
+	| This file declares some of the Spring-managed JavaBeans that make up a CAS deployment.
+	| The beans declared in this file are instantiated at context initialization time by the Spring 
+	| ContextLoaderListener declared in web.xml.  It finds this file because this
+	| file is among those declared in the context parameter "contextConfigLocation".
+	|
+	| By far the most common change you will need to make in this file is to change the last bean
+	| declaration to replace the default SimpleTestUsernamePasswordAuthenticationHandler with
+	| one implementing your approach for authenticating usernames and passwords.
+	+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:p="http://www.springframework.org/schema/p"
+			 xmlns:tx="http://www.springframework.org/schema/tx"
+			 xsi:schemaLocation="http://www.springframework.org/schema/beans
+			 										 http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+			 										 http://www.springframework.org/schema/tx
+			 										 http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+	<!--
+		| This bean declares our AuthenticationManager.  The CentralAuthenticationService service bean
+		| declared in applicationContext.xml picks up this AuthenticationManager by reference to its id,
+		| "authenticationManager".  Most deployers will be able to use the default AuthenticationManager
+		| implementation and so do not need to change the class of this bean.  We include the whole
+		| AuthenticationManager here in the userConfigContext.xml so that you can see the things you will
+		| need to change in context.
+		+-->
+	<bean id="authenticationManager"
+				class="org.jasig.cas.authentication.AuthenticationManagerImpl">
+		<!--
+			| This is the List of CredentialToPrincipalResolvers that identify what Principal is trying to authenticate.
+			| The AuthenticationManagerImpl considers them in order, finding a CredentialToPrincipalResolver which
+			| supports the presented credentials.
+			|
+			| AuthenticationManagerImpl uses these resolvers for two purposes.  First, it uses them to identify the Principal
+			| attempting to authenticate to CAS /login .  In the default configuration, it is the DefaultCredentialsToPrincipalResolver
+			| that fills this role.  If you are using some other kind of credentials than UsernamePasswordCredentials, you will need to replace
+			| DefaultCredentialsToPrincipalResolver with a CredentialsToPrincipalResolver that supports the credentials you are
+			| using.
+			|
+			| Second, AuthenticationManagerImpl uses these resolvers to identify a service requesting a proxy granting ticket.
+			| In the default configuration, it is the HttpBasedServiceCredentialsToPrincipalResolver that serves this purpose.
+			| You will need to change this list if you are identifying services by something more or other than their callback URL.
+			+-->
+		<property name="credentialsToPrincipalResolvers">
+			<list>
+				<ref bean="externalCredentialToPrincipalResolver"/>
+				<!--
+					| HttpBasedServiceCredentialsToPrincipalResolver supports HttpBasedCredentials.  It supports the CAS 2.0 approach of
+					| authenticating services by SSL callback, extracting the callback URL from the Credentials and representing it as a
+					| SimpleService identified by that callback URL.
+					|
+					| If you are representing services by something more or other than an HTTPS URL whereat they are able to
+					| receive a proxy callback, you will need to change this bean declaration (or add additional declarations).
+					+-->
+				<bean
+						class="org.jasig.cas.authentication.principal.HttpBasedServiceCredentialsToPrincipalResolver" />
+			</list>
+		</property>
+
+		<!--
+			| Whereas CredentialsToPrincipalResolvers identify who it is some Credentials might authenticate,
+			| AuthenticationHandlers actually authenticate credentials.  Here we declare the AuthenticationHandlers that
+			| authenticate the Principals that the CredentialsToPrincipalResolvers identified.  CAS will try these handlers in turn
+			| until it finds one that both supports the Credentials presented and succeeds in authenticating.
+			+-->
+		<property name="authenticationHandlers">
+			<list>
+				<!--
+					| This is the authentication handler that authenticates services by means of callback via SSL, thereby validating
+					| a server side SSL certificate.
+					+-->
+				<bean class="org.jasig.cas.authentication.handler.support.HttpBasedServiceCredentialsAuthenticationHandler"
+							p:httpClient-ref="httpClient" />
+
+				<!-- Added alfresco authentication -->
+				<ref bean="externalAuthentication"/>
+
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- JPA Service registry -->
+
+	<bean id="serviceRegistryDao" class="org.jasig.cas.services.JpaServiceRegistryDaoImpl"
+				p:entityManagerFactory-ref="entityManagerFactory" />
+
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="generateDdl" value="true"/>
+				<property name="showSql" value="true" />
+			</bean>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">${database.hibernate.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="dataSource"
+				class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/cas"/>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+
+</beans>

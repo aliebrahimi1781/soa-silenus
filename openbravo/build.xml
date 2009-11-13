@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="OpenBravo SOA" basedir="." default="all">
+
+
+	<target name="init">
+		<!-- First load user defined properties to override the build -->
+		<loadproperties>
+			<file file="${basedir}/build.properties" />
+		</loadproperties>
+
+		<!-- Load environment properties -->
+		<property environment="env"/>
+
+		<condition property="openbravo-available">
+			<and>
+				<available file="${openbravo.file}"/>
+			</and>
+		</condition>
+
+		<condition property="openbravo-unpacked">
+			<and>
+				<available file="${basedir}/erp"/>
+			</and>
+		</condition>
+
+	</target>
+
+
+	<target name="fetch-openbravo"
+					depends="init"
+					unless="openbravo-available"
+					description="--> Download openbravo">
+
+		<echo>Fetching OpenBravo from ${openbravo.download.url} ...</echo>
+		<get src="${openbravo.download.url}"
+				 dest="${openbravo.file}"
+				 usetimestamp="true"
+				/>
+
+	</target>
+
+
+	<target name="unpack-openbravo"
+					depends="fetch-openbravo"
+					unless="openbravo-unpacked"
+					description="--> Unpack openbravo">
+
+		<echo>Unpacking OpenBravo to ${basedir}/erp...</echo>
+		<mkdir dir="${basedir}/erp"/>
+
+		<untar src="${openbravo.file}"
+					 dest="${basedir}/erp"
+					 overwrite="true"
+					 compression="bzip2">
+			<mapper type="glob" from="${openbravo.package.folder}/*" to="*"/>
+		</untar>
+
+	</target>
+
+
+	<target name="all">
+
+		<!-- TODO: build openbravo -->
+
+		<!-- ant setup -->
+		<!-- cd config; ./setup-properties-linux-x64.bin -->
+		<!-- createdb -U sa -h localhost sa // bbdd.systemUser=sa -->
+		<!-- define jakarta.base -->
+		<!-- ant install.source -->
+
+
+		<!-- Deploy to tomcat -->
+		<!-- Install language
+		http://wiki.openbravo.com/wiki/Translating_Openbravo#Installing_a_new_translation
+		-->
+
+
+
+	</target>
+
+</project>

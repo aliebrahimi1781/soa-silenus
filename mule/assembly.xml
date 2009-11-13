@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0
+															http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+	<id>Mule</id>
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>bin</directory>
+			<outputDirectory>bin</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<filtered>true</filtered>
+			<directory>conf</directory>
+			<outputDirectory>conf</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src</directory>
+			<outputDirectory>src</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>data</directory>
+			<outputDirectory>data</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>logs</directory>
+			<outputDirectory>logs</outputDirectory>
+		</fileSet>
+		<!--
+		If a licenses directory is present, copy it.
+		this would contain text files describing the licenses for each
+		non-Mule dependencies
+		-->
+		<fileSet>
+			<directory>licenses</directory>
+			<outputDirectory>licenses</outputDirectory>
+		</fileSet>
+	</fileSets>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>es.silenus.soa:mule</include>
+
+				<!-- Mule -->
+				<include>org.mule:mule-core</include>
+				<include>org.mule.modules:mule-module-spring-config</include>
+				<include>org.mule.transports:mule-transport-jms</include>
+				<include>org.mule.transports:mule-transport-vm</include>
+				<include>org.mule.transports:mule-transport-file</include>
+				<include>org.mule.transports:mule-transport-stdio</include>
+				<include>org.mule.transports:mule-transport-tcp</include>
+				<include>org.mule.transports:mule-transport-ssl</include>
+				<include>org.mule.transports:mule-transport-http</include>
+				<include>org.mule.transports:mule-transport-bpm</include>
+
+				<include>org.safehaus.jug:jug</include>
+				<include>commons-beanutils:commons-beanutils</include>
+				<include>commons-cli:commons-cli</include>
+				<include>commons-collections:commons-collections</include>
+				<include>commons-io:commons-io</include>
+				<include>commons-lang:commons-lang</include>
+				<include>commons-pool:commons-pool</include>
+				<include>commons-codec:commons-codec</include>
+				<include>commons-httpclient:commons-httpclient</include>
+				<include>commons-logging:commons-logging-api</include>
+				<include>commons-logging:commons-logging</include>
+
+				<include>javax.activation:activation</include>
+
+				<include>org.slf4j:jcl104-over-slf4j</include>
+				<include>org.slf4j:slf4j-api</include>
+				<include>org.slf4j:slf4j-log4j12</include>
+				<include>log4j:log4j</include>
+
+				<include>dom4j:dom4j</include>
+				<include>jaxen:jaxen</include>
+				<include>jdom:jdom</include>
+
+
+				<!-- Spring -->
+				<include>org.springframework:spring-context</include>
+				<include>org.springframework:spring-beans</include>
+				<include>org.springframework:spring-core</include>
+				<include>org.springframework:spring-orm</include>
+				<include>org.springframework:spring-tx</include>
+				<include>org.springframework:spring-aop</include>
+				<include>org.springframework:spring-jdbc</include>
+				<include>aopalliance:aopalliance</include>
+
+				<!-- Active Mq -->
+				<include>org.apache.activemq:activemq-core</include>
+				<include>org.apache.activemq:activeio-core</include>
+				<include>org.apache.geronimo.specs:geronimo-j2ee-management_1.1_spec</include>
+				<include>org.apache.geronimo.specs:geronimo-jta_1.0.1B_spec</include>
+				<include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
+				
+				<include>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</include>
+				<include>backport-util-concurrent:backport-util-concurrent</include>
+
+				<!-- BPM -->
+
+				<include>org.jbpm.jbpm4:jbpm-jpdl</include>
+				<include>org.jbpm.jbpm4:jbpm-pvm</include>
+				<include>org.jbpm.jbpm4:jbpm-api</include>
+				<include>org.jbpm.jbpm4:jbpm-log</include>
+
+				<include>juel:juel</include>
+				<include>juel:juel-impl</include>
+				<include>juel:juel-engine</include>
+
+				<include>org.hibernate:hibernate-core</include>
+				<include>org.hibernate:hibernate-entitymanager</include>
+				<include>org.hibernate:ejb3-persistence</include>
+				<include>org.hibernate:hibernate-commons-annotations</include>
+				<include>org.hibernate:hibernate-annotations</include>
+				<include>org.hibernate:hibernate-ehcache</include>
+				<include>net.sf.ehcache:ehcache</include>
+				<include>javax.transaction:jta</include>
+				<include>antlr:antlr</include>
+				<include>javassist:javassist</include>
+
+				<include>commons-dbcp:commons-dbcp</include>
+				<include>commons-pool:commons-pool</include>
+				<include>mysql:mysql-connector-java</include>
+				<include>javax.activation:activation</include>
+				<include>javax.mail:mail</include>
+
+				<!-- Alfresco -->
+				<include>org.apache.axis:axis</include>
+				<include>org.apache.axis:axis-jaxrpc</include>
+				<include>org.apache.axis:axis-saaj</include>
+				<include>wsdl4j:wsdl4j</include>
+				<include>commons-discovery:commons-discovery</include>
+				<include>wss4j:wss4j</include>
+				<include>xml-security:xmlsec</include>
+				<include>opensaml:opensaml</include>
+				<include>xerces:xercesImpl</include>
+				<include>org.alfresco:webservice-client</include>
+
+			</includes>
+		</dependencySet>
+	</dependencySets>
+</assembly>

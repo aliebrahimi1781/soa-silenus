@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>es.silenus.soa</groupId>
+	<artifactId>alfresco</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>SOA Silenus Alfresco webapp</name>
+	<inceptionYear>2009</inceptionYear>
+	<description>Alfresco customization for SOA Silenus project</description>
+	<organization>
+		<name>Silenus Consultoria, S.L.U.</name>
+		<url>http://www.silenus-consultoria.es</url>
+	</organization>
+
+
+	<developers>
+		<developer>
+			<id>malonso</id>
+			<name>Mariano Alonso Ortiz</name>
+			<email>malonso@silenus-consultoria.es</email>
+			<organization>Silenus Consultoria, S.L.U.</organization>
+			<organizationUrl>http://www.silenus-consultoria.es</organizationUrl>
+		</developer>
+		<developer>
+			<id>jemacineiras</id>
+			<name>Jose Enrique Garcia Macineiras</name>
+			<email>jemacineiras@silenus-consultoria.es</email>
+			<organization>Silenus Consultoria, S.L.U.</organization>
+			<organizationUrl>http://www.silenus-consultoria.es</organizationUrl>
+		</developer>
+	</developers>
+
+	<build>
+		<finalName>alfresco</finalName>
+		<defaultGoal>package</defaultGoal>
+
+		<filters>
+			<filter>../build.properties</filter>
+		</filters>
+
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${maven.compile.source}</source>
+					<target>${maven.compile.target}</target>
+					<debug>${maven.compiler.debug}</debug>
+					<optimize>${maven.compiler.optimize}</optimize>
+				</configuration>
+			</plugin>
+			<!-- WAR plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<!-- version>2.1-alpha-2</version -->
+				<configuration>
+					<filters>
+						<filter>../build.properties</filter>
+					</filters>
+					<webResources>
+						<resource>
+							<directory>
+								${pom.basedir}/src/main/webapp/WEB-INF
+							</directory>
+							<targetPath>WEB-INF</targetPath>
+							<filtering>true</filtering>
+							<includes>
+								<include>web.xml</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>alfresco</artifactId>
+			<version>${alfresco.version}</version>
+			<type>war</type>
+		</dependency>
+
+		<dependency>
+			<groupId>es.silenus</groupId>
+			<artifactId>alfresco-sso</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cas</groupId>
+			<artifactId>casclient</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>jdk16</id>
+			<activation>
+				<jdk>1.6</jdk>
+			</activation>
+			<properties>
+				<maven.compile.source>1.5</maven.compile.source>
+				<maven.compile.target>1.5</maven.compile.target>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+				<spring.version>2.5.6</spring.version>
+				<spring.security.version>2.0.4</spring.security.version>
+				<cas.version>3.3.3</cas.version>
+				<spring.ldap>1.3.0.RELEASE</spring.ldap>
+				<alfresco.version>3.2r</alfresco.version>
+			</properties>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>silenus</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<name>Silenus Consultoria Maven Repository</name>
+			<url>
+				http://svn.silenus-consultoria.es/nexus/content/groups/public
+			</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>silenus</id>
+			<name>Silenus Consultoria Maven Plugin Repository</name>
+			<url>
+				http://svn.silenus-consultoria.es/nexus/content/groups/public
+			</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+
+
+	<!--
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changelog-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
+	-->
+
+
+</project>
