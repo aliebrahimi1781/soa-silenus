@@ -48,6 +48,8 @@
 				<!-- Mule -->
 				<include>org.mule:mule-core</include>
 				<include>org.mule.modules:mule-module-spring-config</include>
+				<include>org.mule.modules:mule-module-client</include>
+				<include>org.mule.modules:mule-module-xml</include>
 				<include>org.mule.transports:mule-transport-jms</include>
 				<include>org.mule.transports:mule-transport-vm</include>
 				<include>org.mule.transports:mule-transport-file</include>
@@ -68,6 +70,7 @@
 				<include>commons-httpclient:commons-httpclient</include>
 				<include>commons-logging:commons-logging-api</include>
 				<include>commons-logging:commons-logging</include>
+				<include>commons-jxpath:commons-jxpath</include>
 
 				<include>javax.activation:activation</include>
 
@@ -79,6 +82,7 @@
 				<include>dom4j:dom4j</include>
 				<include>jaxen:jaxen</include>
 				<include>jdom:jdom</include>
+				<include>net.java.dev.stax-utils:stax-utils</include>
 
 
 				<!-- Spring -->

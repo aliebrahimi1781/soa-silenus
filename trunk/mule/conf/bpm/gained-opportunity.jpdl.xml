@@ -7,15 +7,36 @@
 
 
 	<start>
-		<transition to="Completed" />
+		<transition to="Create BusinessPartner" />
 	</start>
+
+	<java name="Create BusinessPartner" expr="${businessPartnerService}" method="createBusinessPartner">
+		<arg><object expr="#{incoming}"/></arg>
+		<transition to="Create Project"/>
+	</java>
+	
+	<java name="Create Project" expr="${projectService}" method="createProject">
+		<arg><object expr="#{incoming}"/></arg>
+		<transition to="Extract Folder"/>
+	</java>
+	
+	<java name="Extract Folder" expr="${xPathService}" method="getXPathValue" var="projectName">
+        <arg><string value="/Opportunity/name" /> </arg>
+        <arg><object expr="#{incoming}"/></arg>
+        <transition to="Create Folder"/>
+    </java>
+	
+	<java name="Create Folder" expr="${folderService}" method="createSubFolder">
+		<arg><string value="/Proyectos" /> </arg>
+		<arg><object expr="#{projectName}"/> </arg>
+		<transition to="Completed"/>
+	</java>
+
 
 	<!--
 	TODO: Create account in ERP, Create Project in ERP, Create Folder in DM
 
 	-->
-
-
 	<end name="Completed" />
 
 </process>

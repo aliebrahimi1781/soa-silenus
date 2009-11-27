@@ -32,12 +32,12 @@ echo "Instalación Maven"
 tar xvzf apache-maven-2.2.1-bin.tar.gz
 ln -s apache-maven-2.2.1 maven
 
-echo "Configuración del perfil de desarrollo”
+echo "Configuración del perfil de desarrollo"”
 echo -e "# Entorno de desarrollo Java" >> /etc/profile
 echo -e "JAVA_HOME=/opt/java/java-6-sun" >> /etc/profile
 echo -e "ANT_HOME=/opt/java/ant" >> /etc/profile
 echo -e "MAVEN_HOME=/opt/java/maven" >> /etc/profile
-echo -e "PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$MAVEN_HOME/bin:$PATH" >> /etc/profile
+echo -e "PATH=\$JAVA_HOME/bin:\$ANT_HOME/bin:\$MAVEN_HOME/bin:\$PATH" >> /etc/profile
 echo -e "export JAVA_HOME ANT_HOME MAVEN_HOME PATH" >> /etc/profile
 
 echo "Recargamos el perfil"
@@ -153,6 +153,16 @@ La estructura necesaria es:
 
 
 6) Tomcat con Alfresco y CAS
+
+- Otras dependencias de Alfresco
+
+> apt-get install imagemagick openoffice.org-headless zlib1g zlib1g-dev libgif4 libgif-dev libjpeg62 libjpeg62-dev libfreetype6 libfreetype6-dev
+> cd /usr/local/src
+> wget http://www.swftools.org/swftools-0.9.0.tar.gz
+> tar xvzf swftools-0.9.0.tar.gz
+> cd swftools-0.9.0
+> ./configure --prefix=/usr
+> make && make install
 
 - Después del paso 2) Todo debería estar listo para funcionar correctamente.
 - Para comprobarlo se puede arrancar el tomcat.

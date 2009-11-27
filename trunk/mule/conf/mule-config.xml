@@ -113,7 +113,7 @@
 				</vm:inbound-endpoint>
 			</inbound>
 
-			<log-component/>
+			<echo-component/>
 
 			<outbound>
 				<pass-through-router>
@@ -134,7 +134,7 @@
 				</selective-consumer-router>
 			</inbound>
 
-			<log-component/>
+			<echo-component/>
 
 			<outbound>
 				<pass-through-router>
@@ -158,8 +158,5 @@
 				</pass-through-router>
 			</outbound>
 		</service>
-
 	</model>
-
-
 </mule>
