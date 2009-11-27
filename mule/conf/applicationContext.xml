@@ -145,5 +145,22 @@
 		<property name="endpointPassword" value="${alfresco.api.password}"/>
 	</bean>
 
+    <bean id="projectService" class="es.silenus.soa.openbravo.ProjectManagementService">
+        <property name="openbravoUrl" value="${openbravo.webservice.url}"/>
+        <property name="login" value="${openbravo.webservice.user}"/>
+        <property name="pass" value="${openbravo.webservice.password}"/>
+        <property name="xslProject" value="classpath:/es/silenus/soa/openbravo/project.xsl" />
+        <property name="xmlExample" value="es.silenus.soa.openbravo.opportunity.xml" />
+    </bean>
+    
+    <bean id="businessPartnerService" class="es.silenus.soa.openbravo.BusinessPartnerManagementService">
+        <property name="openbravoUrl" value="${openbravo.webservice.url}"/>
+        <property name="login" value="${openbravo.webservice.user}"/>
+        <property name="pass" value="${openbravo.webservice.password}"/>
+        <property name="xslBusinessPartner" value="classpath:/es/silenus/soa/openbravo/bussinesspartner.xsl" />
+        <property name="xmlExample" value="es.silenus.soa.openbravo.opportunity.xml" />
+    </bean>
+    
+    <bean id="xPathService" class="es.silenus.soa.util.XPathService" />
 
 </beans>

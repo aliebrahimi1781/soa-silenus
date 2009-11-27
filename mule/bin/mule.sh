@@ -66,9 +66,14 @@ case "$1" in
 		;;
 	'debug')
 		getpid
-		echo "Starting mule for debugging..."
-		java $JAVA_OPTS $JPDA_OPTS $MULE_OPTS &
-		echo $! > $PIDFILE
+		if [ "X$pid" = "X" ]; then
+			echo "Starting mule for debugging..."
+			java $JAVA_OPTS $JPDA_OPTS $MULE_OPTS &
+			echo $! > $PIDFILE
+		else
+			echo "Mule is already running"
+			exit 1
+		fi
 		;;
 	*)
 		echo "$0 start|stop|debug"

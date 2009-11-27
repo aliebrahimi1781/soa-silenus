@@ -228,7 +228,7 @@ public class FolderService implements InitializingBean {
 
 			return results[0].getDestination();
 		} catch(RemoteException e) {
-			LOG.error(String.format("Error creating folder: %s in path: %s", folderName, parentPath));
+			LOG.error(String.format("Error creating folder: %s in path: %s", folderName, parentPath), e);
 		}
 
 		return null;

@@ -42,6 +42,7 @@
 				<includes>
 					<include>**/*.properties</include>
 					<include>**/*.xml</include>
+                    <include>**/*.xsl</include>
 				</includes>
 			</resource>
 		</resources>
@@ -260,6 +261,11 @@
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-jxpath</groupId>
+			<artifactId>commons-jxpath</artifactId>
+			<version>1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

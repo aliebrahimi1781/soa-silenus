@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Opportunity>
+  <id>733b7331-319f-08e1-5290-4b03ca8fc7d3</id>
+  <name>oportunidad de 3</name>
+  <date_entered></date_entered>
+  <date_modified>2009-11-19T16:20:45</date_modified>
+  <modified_user_id>1</modified_user_id>
+  <modified_by_name>admin</modified_by_name>
+  <created_by>1</created_by>
+  <created_by_name>admin</created_by_name>
+  <description></description>
+  <deleted>0</deleted>
+  <assigned_user_id>1</assigned_user_id>
+  <assigned_user_name>admin</assigned_user_name>
+  <opportunity_type></opportunity_type>
+  <account_name>Cuenta de Segundas</account_name>
+  <account_id>8398adee-e9c1-b079-6420-4b03c03ac77c</account_id>
+  <campaign_id></campaign_id>
+  <campaign_name></campaign_name>
+  <lead_source></lead_source>
+  <amount>50000.00</amount>
+  <amount_usdollar>50000</amount_usdollar>
+  <currency_id>-99</currency_id>
+  <currency_name>Euro</currency_name>
+  <currency_symbol>€</currency_symbol>
+  <date_closed>2009-11-25</date_closed>
+  <next_step></next_step>
+  <sales_stage>Closed Won</sales_stage>
+  <probability>100</probability>
+</Opportunity>
